@@ -1,0 +1,12 @@
+--- clr-boot-manager-1.1.0/data/clr-boot-manager-booted.service~	2016-11-08 17:24:38.000000000 +0000
++++ clr-boot-manager-1.1.0/data/clr-boot-manager-booted.service	2017-05-07 22:31:23.460875281 +0000
+@@ -2,7 +2,8 @@
+ Description=clr-boot-manager tracking kernel boot success
+ 
+ [Service]
+-Type=oneshot
++Type=idle
++Nice=10
+ ExecStart=/usr/bin/clr-boot-manager report-booted
+ 
+ [Install]
