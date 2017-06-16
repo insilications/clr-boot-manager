@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xB8987752EC6A08C9 (ikey.doherty@gmail.com)
 #
 Name     : clr-boot-manager
-Version  : 1.5.3
-Release  : 19
-URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v1.5.3/clr-boot-manager-1.5.3.tar.xz
-Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v1.5.3/clr-boot-manager-1.5.3.tar.xz
-Source99 : https://github.com/clearlinux/clr-boot-manager/releases/download/v1.5.3/clr-boot-manager-1.5.3.tar.xz.asc
+Version  : 1.5.4
+Release  : 20
+URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v1.5.4/clr-boot-manager-1.5.4.tar.xz
+Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v1.5.4/clr-boot-manager-1.5.4.tar.xz
+Source99 : https://github.com/clearlinux/clr-boot-manager/releases/download/v1.5.4/clr-boot-manager-1.5.4.tar.xz.asc
 Summary  : Common C library functions
 Group    : Development/Tools
 License  : LGPL-2.1
@@ -65,7 +65,7 @@ doc components for the clr-boot-manager package.
 
 
 %prep
-%setup -q -n clr-boot-manager-1.5.3
+%setup -q -n clr-boot-manager-1.5.4
 %patch1 -p1
 
 %build
@@ -73,7 +73,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1497538335
+export SOURCE_DATE_EPOCH=1497625655
 %configure --disable-static --with-vendor-prefix=Clear-linux \
 --with-kernel-modules-dir=/usr/lib/modules \
 --with-kernel-namespace=org.clearlinux \
@@ -81,7 +81,7 @@ export SOURCE_DATE_EPOCH=1497538335
 make V=1  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1497538335
+export SOURCE_DATE_EPOCH=1497625655
 rm -rf %{buildroot}
 %make_install
 ## make_install_append content
