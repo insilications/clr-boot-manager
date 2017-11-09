@@ -1,4 +1,4 @@
---with-vendor-prefix=Clear-linux
---with-kernel-modules-dir=/usr/lib/modules
---with-kernel-namespace=org.clearlinux
---with-bootloader=systemd-boot
+-Dwith-vendor-prefix=Clear-linux
+-Dwith-kernel-modules-dir=/usr/lib/modules
+-Dwith-kernel-namespace=org.clearlinux
+-Dwith-bootloader=shim-systemd-boot

@@ -1,0 +1,28 @@
+From f18991e3bcb37be96b488e64678943921aacb94d Mon Sep 17 00:00:00 2001
+From: William Douglas <william.douglas@intel.com>
+Date: Thu, 9 Nov 2017 19:27:58 +0000
+Subject: [PATCH] Ease performance impact of kernel booted detection
+
+Change the kernel boot detection service to be kinder to boot time
+performance.
+---
+ data/clr-boot-manager-booted.service.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/data/clr-boot-manager-booted.service.in b/data/clr-boot-manager-booted.service.in
+index 0dfe53a..42a466e 100644
+--- a/data/clr-boot-manager-booted.service.in
++++ b/data/clr-boot-manager-booted.service.in
+@@ -2,7 +2,8 @@
+ Description=clr-boot-manager tracking kernel boot success
+ 
+ [Service]
+-Type=oneshot
++Type=idle
++Nice=10
+ ExecStart=@BINDIR@/clr-boot-manager report-booted
+ 
+ [Install]
+-- 
+2.15.0
+
