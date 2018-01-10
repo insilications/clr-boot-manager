@@ -1,0 +1,44 @@
+From 49469e23245f2c67c726c4351f6ce249f209b6db Mon Sep 17 00:00:00 2001
+From: Patrick McCarty <patrick.mccarty@intel.com>
+Date: Tue, 9 Jan 2018 14:57:37 -0800
+Subject: [PATCH 2/3] Remove file descriptor leak check
+
+When clr-boot-manager (CBM) is forked/exec'd via swupd-client, file
+descriptor leak checks are performed first by CBM, and then by
+swupd-client.
+
+However, not all file descriptors opened by swupd-client will be closed
+during the exec of CBM, leading to CBM falsely reporting leaks for file
+descriptors inherited from the parent process. In cases when CBM reports
+valid leaks, swupd-client will later report them as well, making the CBM
+reports extraneous.
+
+Arguably, swupd-client should try to mark its open file descriptors
+O_CLOEXEC, but at least one of the descriptors is managed by libcurl,
+and no API exists to set O_CLOEXEC on it (as far as I know).
+
+So, for now, remove the file descriptor leak here. Perhaps reintroduce
+it later when more testing is implemented to ensure that relevant file
+descriptors opened by CBM are not leaked.
+
+Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
+---
+ src/cli/main.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/src/cli/main.c b/src/cli/main.c
+index b44c949..9bb25e6 100644
+--- a/src/cli/main.c
++++ b/src/cli/main.c
+@@ -85,8 +85,6 @@ the Free Software Foundation; either version 2.1 of the License, or\n\
+ 
+ int main(int argc, char **argv)
+ {
+-        atexit(nc_dump_file_descriptor_leaks);
+-
+         autofree(NcHashmap) *commands = NULL;
+         const char *command = NULL;
+         SubCommand *s_command = NULL;
+-- 
+2.15.1
+
