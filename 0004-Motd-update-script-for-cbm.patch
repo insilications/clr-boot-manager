@@ -1,0 +1,35 @@
+From dbce3b95152c696c36e80c069e8c797b04fb93da Mon Sep 17 00:00:00 2001
+From: Auke Kok <auke-jan.h.kok@intel.com>
+Date: Tue, 30 Jan 2018 10:57:25 -0800
+Subject: [PATCH] Motd updating script for clearlinux.
+
+---
+ clr-boot-manager-motd.sh | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+ create mode 100644 clr-boot-manager-motd.sh
+
+diff --git a/clr-boot-manager-motd.sh b/clr-boot-manager-motd.sh
+new file mode 100644
+index 0000000..fffffff
+--- /dev/null
++++ b/clr-boot-manager-motd.sh
+@@ -0,0 +1,16 @@
++#!/bin/sh
++
++MOTDD="/run/motd.d"
++MOTDF="$MOTDD/clr-boot-manager.motd"
++
++mkdir -p "$MOTDD"
++
++CUR="`uname -r`"
++NEW="`readlink /usr/lib/kernel/default-native | sed 's/org.clearlinux.\([a-z+]*\).\(.*\)/\2.\1/'`"
++
++if [ "$CUR" != "$NEW" ]; then
++	echo -e " * A kernel update is available: you may wish to reboot the system." > "$MOTDF"
++else
++	rm -f "$MOTDF"
++fi
++
+-- 
+2.16.1
+

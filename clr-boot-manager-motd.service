@@ -1,0 +1,8 @@
+[Unit]
+Description=Notify users that a kernel update is available
+BindsTo=update-triggers.target
+Before=motd-trigger.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/clr-boot-manager-motd.sh

@@ -1,2 +1,6 @@
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 ln -s ../clr-boot-manager-booted.service %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/clr-boot-manager-booted.service
+mkdir -p %{buildroot}/usr/bin
+install -m0755 clr-boot-manager-motd.sh %{buildroot}/usr/bin/clr-boot-manager-motd.sh
+mkdir -p %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants
+ln -sf ../clr-boot-manager-motd.service %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants/clr-boot-manager-motd.service
