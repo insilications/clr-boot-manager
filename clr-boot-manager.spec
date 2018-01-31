@@ -6,7 +6,7 @@
 #
 Name     : clr-boot-manager
 Version  : 2.0.0
-Release  : 24
+Release  : 25
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.0.0/clr-boot-manager-2.0.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.0.0/clr-boot-manager-2.0.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -32,6 +32,7 @@ Patch1: 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 Patch2: 0002-Remove-file-descriptor-leak-check.patch
 Patch3: 0003-Add-documentation-to-man-page-for-kernel-configurati.patch
 Patch4: 0004-Motd-update-script-for-cbm.patch
+Patch5: 0005-bootman-use-one-initrd-on-Clear-Linux.patch
 
 %description
 clr-boot-manager
@@ -77,13 +78,14 @@ doc components for the clr-boot-manager package.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1517347415
+export SOURCE_DATE_EPOCH=1517374407
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \
