@@ -1,0 +1,40 @@
+From 8ecd8b9a5961739c649f995734dc23df442fa450 Mon Sep 17 00:00:00 2001
+From: Miguel Bernal Marin <miguel.bernal.marin@linux.intel.com>
+Date: Tue, 30 Jan 2018 22:27:57 -0600
+Subject: [PATCH] bootman: use one initrd on Clear Linux
+
+This is a special patch only used by Clear Linux, not to be upstream.
+
+Clear Linux is shipping an unique initrd image which will be used by all
+the kernels. This initrd is used to decrypt the root partition.
+
+The initrd is called clr-init.img.gz which is shipped in the
+bootloader-extra bundle. When this bundle is installed clr-boot-manager
+will install the initrd image when the update operation is performed.
+
+Signed-off-by: Miguel Bernal Marin <miguel.bernal.marin@linux.intel.com>
+---
+ src/bootman/kernel.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/src/bootman/kernel.c b/src/bootman/kernel.c
+index db2e8e1..74201c9 100644
+--- a/src/bootman/kernel.c
++++ b/src/bootman/kernel.c
+@@ -82,12 +82,7 @@ Kernel *boot_manager_inspect_kernel(BootManager *self, char *path)
+         sysmap_file = string_printf("%s/System.map-%s-%d.%s", parent, version, release, type);
+ 
+         /* i.e. /usr/lib/kernel/initrd-org.clearlinux.lts.4.9.1-1  */
+-        initrd_file = string_printf("%s/initrd-%s.%s.%s-%d",
+-                                    parent,
+-                                    KERNEL_NAMESPACE,
+-                                    type,
+-                                    version,
+-                                    release);
++        initrd_file = string_printf("%s/clr-init.img.gz", parent);
+ 
+         /* i.e. /etc/kernel/initrd-org.clearlinux.lts.4.9.1-1  */
+         user_initrd_file = string_printf("%s/initrd-%s.%s.%s-%d",
+-- 
+2.16.1
+
