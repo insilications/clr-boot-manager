@@ -6,7 +6,7 @@
 #
 Name     : clr-boot-manager
 Version  : 2.0.0
-Release  : 27
+Release  : 28
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.0.0/clr-boot-manager-2.0.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.0.0/clr-boot-manager-2.0.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -85,7 +85,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1522260275
+export SOURCE_DATE_EPOCH=1522260471
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \

@@ -2,3 +2,5 @@
 # picked up automatically. One name per line, no whitespace.
 systemd-boot
 valgrind
+efivar-dev
+gnu-efi-dev
