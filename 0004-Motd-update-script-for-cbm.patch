@@ -13,7 +13,7 @@ new file mode 100644
 index 0000000..fffffff
 --- /dev/null
 +++ b/clr-boot-manager-motd.sh
-@@ -0,0 +1,16 @@
+@@ -0,0 +1,23 @@
 +#!/bin/sh
 +
 +MOTDD="/run/motd.d"
@@ -22,7 +22,14 @@ index 0000000..fffffff
 +mkdir -p "$MOTDD"
 +
 +CUR="`uname -r`"
-+NEW="`readlink /usr/lib/kernel/default-native | sed 's/org.clearlinux.\([a-z+]*\).\(.*\)/\2.\1/'`"
++SUF="`uname -r| sed 's/.*[.]//'`"
++DEF="/usr/lib/kernel/default-$SUF"
++
++if [ ! -e $DEF ]; then
++	exit 0
++fi
++
++NEW="`readlink $DEF | sed 's/org.clearlinux.\([a-z+]*\).\(.*\)/\2.\1/'`"
 +
 +if [ "$CUR" != "$NEW" ]; then
 +	echo -e " * A kernel update is available: you may wish to reboot the system." > "$MOTDF"
