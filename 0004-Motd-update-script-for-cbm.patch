@@ -34,7 +34,7 @@ index 0000000..fffffff
 +if [ "$CUR" != "$NEW" ]; then
 +	echo -e " * A kernel update is available: you may wish to reboot the system." > "$MOTDF"
 +else
-+	rm -f "$MOTDF"
++	> "$MOTDF"
 +fi
 +
 -- 
