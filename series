@@ -1,5 +1,2 @@
 0001-Ease-performance-impact-of-kernel-booted-detection.patch
-0002-Remove-file-descriptor-leak-check.patch
-0003-Add-documentation-to-man-page-for-kernel-configurati.patch
-0004-Motd-update-script-for-cbm.patch
-0005-bootman-use-one-initrd-on-Clear-Linux.patch
+0002-Motd-update-script-for-cbm.patch
