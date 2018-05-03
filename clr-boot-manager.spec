@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 2.1.0
-Release  : 30
+Release  : 31
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.1.0/clr-boot-manager-2.1.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.1.0/clr-boot-manager-2.1.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -27,6 +27,7 @@ BuildRequires : systemd-boot
 BuildRequires : valgrind
 Patch1: 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 Patch2: 0002-Motd-update-script-for-cbm.patch
+Patch3: 0001-clr-boot-manager-add-rd.luks.options-timeout-90.patch
 
 %description
 clr-boot-manager
@@ -70,13 +71,14 @@ doc components for the clr-boot-manager package.
 %setup -q -n clr-boot-manager-2.1.0
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1524769088
+export SOURCE_DATE_EPOCH=1525361456
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \

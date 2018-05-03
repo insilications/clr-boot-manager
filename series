@@ -1,2 +1,3 @@
 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 0002-Motd-update-script-for-cbm.patch
+0001-clr-boot-manager-add-rd.luks.options-timeout-90.patch
