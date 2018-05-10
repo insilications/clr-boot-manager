@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 2.1.0
-Release  : 31
+Release  : 32
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.1.0/clr-boot-manager-2.1.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v2.1.0/clr-boot-manager-2.1.0.tar.xz
 Source1  : clr-boot-manager-motd.service
