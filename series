@@ -1,3 +1,4 @@
 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 0002-Motd-update-script-for-cbm.patch
 0001-clr-boot-manager-set-systemd-initrd-options.patch
+0002-Don-t-set-root-for-Oracle-kernels.patch
