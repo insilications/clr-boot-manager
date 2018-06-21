@@ -1,16 +1,16 @@
-From dbce3b95152c696c36e80c069e8c797b04fb93da Mon Sep 17 00:00:00 2001
+From 052d8949803093831f1f73d1058c5ed9b96bc2a1 Mon Sep 17 00:00:00 2001
 From: Auke Kok <auke-jan.h.kok@intel.com>
 Date: Tue, 30 Jan 2018 10:57:25 -0800
-Subject: [PATCH] Motd updating script for clearlinux.
+Subject: [PATCH 2/3] Motd updating script for clearlinux.
 
 ---
- clr-boot-manager-motd.sh | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ clr-boot-manager-motd.sh | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
  create mode 100644 clr-boot-manager-motd.sh
 
 diff --git a/clr-boot-manager-motd.sh b/clr-boot-manager-motd.sh
 new file mode 100644
-index 0000000..fffffff
+index 0000000..c1ad934
 --- /dev/null
 +++ b/clr-boot-manager-motd.sh
 @@ -0,0 +1,23 @@
@@ -38,5 +38,5 @@ index 0000000..fffffff
 +fi
 +
 -- 
-2.16.1
+2.17.1
 

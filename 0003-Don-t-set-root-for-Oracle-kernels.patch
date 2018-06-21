@@ -1,0 +1,31 @@
+From e47021e0150f1927d14645642ef0fea882358986 Mon Sep 17 00:00:00 2001
+From: William Douglas <william.douglas@intel.com>
+Date: Thu, 21 Jun 2018 18:11:16 +0000
+Subject: [PATCH 3/3] Don't set root= for Oracle kernels
+
+Because the disk image the with the rootfs is coming from iscsi, the
+root= kernel commandline option causes init to be unable to mount the
+rootfs when using dracut. For now work around this problem by just not
+setting root= in clr-boot-manager when the Oracle is the kernel type.
+---
+ src/bootloaders/systemd-class.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/bootloaders/systemd-class.c b/src/bootloaders/systemd-class.c
+index b09497f..017ddc3 100644
+--- a/src/bootloaders/systemd-class.c
++++ b/src/bootloaders/systemd-class.c
+@@ -260,7 +260,9 @@ bool sd_class_install_kernel(const BootManager *manager, const Kernel *kernel)
+         }
+ 
+         /* Add the root= section */
+-        if (root_dev->part_uuid) {
++        if (streq(kernel->meta.ktype, "oracle")) {
++                cbm_writer_append_printf(writer, "options ");
++        } else if (root_dev->part_uuid) {
+                 cbm_writer_append_printf(writer, "options root=PARTUUID=%s ", root_dev->part_uuid);
+         } else {
+                 cbm_writer_append_printf(writer, "options root=UUID=%s ", root_dev->uuid);
+-- 
+2.17.1
+
