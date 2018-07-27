@@ -2,3 +2,4 @@
 0002-Motd-updating-script-for-clearlinux.patch
 0003-Don-t-set-root-for-Oracle-kernels.patch
 
+0004-Do-not-fail-an-update-on-efivar-creation-failure.patch

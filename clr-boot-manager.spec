@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.0.0
-Release  : 38
+Release  : 39
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.0.0/clr-boot-manager-3.0.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.0.0/clr-boot-manager-3.0.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -16,18 +16,17 @@ Requires: clr-boot-manager-config
 Requires: clr-boot-manager-autostart
 Requires: clr-boot-manager-license
 Requires: clr-boot-manager-man
+BuildRequires : buildreq-meson
 BuildRequires : efivar-dev
 BuildRequires : gnu-efi-dev
-BuildRequires : meson
-BuildRequires : ninja
 BuildRequires : pkgconfig(blkid)
 BuildRequires : pkgconfig(check)
 BuildRequires : pkgconfig(systemd)
-BuildRequires : python3
 BuildRequires : valgrind
 Patch1: 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 Patch2: 0002-Motd-updating-script-for-clearlinux.patch
 Patch3: 0003-Don-t-set-root-for-Oracle-kernels.patch
+Patch4: 0004-Do-not-fail-an-update-on-efivar-creation-failure.patch
 
 %description
 clr-boot-manager
@@ -82,13 +81,14 @@ man components for the clr-boot-manager package.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1530035584
+export SOURCE_DATE_EPOCH=1532653348
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \
@@ -102,14 +102,14 @@ cp src/libnica/LICENSE.LGPL2.1 %{buildroot}/usr/share/doc/clr-boot-manager/src_l
 DESTDIR=%{buildroot} ninja -C builddir install
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/clr-boot-manager-motd.service
-## make_install_append content
+## install_append content
 mkdir -p %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/
 ln -s ../clr-boot-manager-booted.service %{buildroot}/usr/lib/systemd/system/multi-user.target.wants/clr-boot-manager-booted.service
 mkdir -p %{buildroot}/usr/bin
 install -m0755 clr-boot-manager-motd.sh %{buildroot}/usr/bin/clr-boot-manager-motd.sh
 mkdir -p %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants
 ln -sf ../clr-boot-manager-motd.service %{buildroot}/usr/lib/systemd/system/update-triggers.target.wants/clr-boot-manager-motd.service
-## make_install_append end
+## install_append end
 
 %files
 %defattr(-,root,root,-)
