@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.1.0
-Release  : 40
+Release  : 42
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -26,6 +26,10 @@ BuildRequires : valgrind
 Patch1: 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 Patch2: 0002-Motd-updating-script-for-clearlinux.patch
 Patch3: 0003-Don-t-set-root-for-Oracle-kernels.patch
+Patch4: 0004-bootman-Add-functions-for-u-mounting-the-ESP.patch
+Patch5: 0005-bootman-Make-use-of-new-u-mount_boot-calls.patch
+Patch6: 0006-bootman-Move-mount-and-list-helpers.patch
+Patch7: 0007-bootman-Use-mount-helpers-for-setting-the-default-ke.patch
 
 %description
 clr-boot-manager
@@ -80,13 +84,17 @@ services components for the clr-boot-manager package.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1542237768
+export SOURCE_DATE_EPOCH=1542408812
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \

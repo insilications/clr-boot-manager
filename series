@@ -1,3 +1,7 @@
 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 0002-Motd-updating-script-for-clearlinux.patch
 0003-Don-t-set-root-for-Oracle-kernels.patch
+0004-bootman-Add-functions-for-u-mounting-the-ESP.patch
+0005-bootman-Make-use-of-new-u-mount_boot-calls.patch
+0006-bootman-Move-mount-and-list-helpers.patch
+0007-bootman-Use-mount-helpers-for-setting-the-default-ke.patch
