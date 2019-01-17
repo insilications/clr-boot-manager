@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.1.0
-Release  : 43
+Release  : 44
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -31,6 +31,7 @@ Patch5: 0005-bootman-Make-use-of-new-u-mount_boot-calls.patch
 Patch6: 0006-bootman-Move-mount-and-list-helpers.patch
 Patch7: 0007-bootman-Use-mount-helpers-for-setting-the-default-ke.patch
 Patch8: 0008-Attempt-kernel-update-even-if-bootloader-update-fail.patch
+Patch9: 0009-Correct-man-page-s-vendor-kernel-configuration-direc.patch
 
 %description
 clr-boot-manager
@@ -90,13 +91,14 @@ services components for the clr-boot-manager package.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1544033519
+export SOURCE_DATE_EPOCH=1547751184
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \
