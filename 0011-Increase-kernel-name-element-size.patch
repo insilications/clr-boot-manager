@@ -1,0 +1,25 @@
+From 369b8597a6697e84731a7007bd71b33a8357b720 Mon Sep 17 00:00:00 2001
+From: Arzhan Kinzhalin <arzhan.i.kinzhalin@intel.com>
+Date: Tue, 19 Feb 2019 09:40:28 -0800
+Subject: [PATCH 2/2] Increase kernel name element size.
+
+---
+ src/bootman/bootman.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/bootman/bootman.h b/src/bootman/bootman.h
+index f3a9a0d..94d59c0 100644
+--- a/src/bootman/bootman.h
++++ b/src/bootman/bootman.h
+@@ -32,7 +32,7 @@ typedef enum {
+ /**
+  * Maximum length for each component in a kernel identifier
+  */
+-#define CBM_KELEM_LEN 15
++#define CBM_KELEM_LEN 31
+ 
+ /**
+  * Represents the currently running system kernel
+-- 
+2.20.1
+

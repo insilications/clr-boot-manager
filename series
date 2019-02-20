@@ -7,3 +7,5 @@
 0007-bootman-Use-mount-helpers-for-setting-the-default-ke.patch
 0008-Attempt-kernel-update-even-if-bootloader-update-fail.patch
 0009-Correct-man-page-s-vendor-kernel-configuration-direc.patch
+0010-Fix-size-check.patch
+0011-Increase-kernel-name-element-size.patch
