@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.1.0
-Release  : 45
+Release  : 46
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -34,6 +34,7 @@ Patch8: 0008-Attempt-kernel-update-even-if-bootloader-update-fail.patch
 Patch9: 0009-Correct-man-page-s-vendor-kernel-configuration-direc.patch
 Patch10: 0010-Fix-size-check.patch
 Patch11: 0011-Increase-kernel-name-element-size.patch
+Patch12: 0012-Fix-kernel-commandline-removal-handling.patch
 
 %description
 clr-boot-manager
@@ -52,7 +53,6 @@ autostart components for the clr-boot-manager package.
 Summary: bin components for the clr-boot-manager package.
 Group: Binaries
 Requires: clr-boot-manager-license = %{version}-%{release}
-Requires: clr-boot-manager-man = %{version}-%{release}
 Requires: clr-boot-manager-services = %{version}-%{release}
 
 %description bin
@@ -96,13 +96,16 @@ services components for the clr-boot-manager package.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1550641041
+export SOURCE_DATE_EPOCH=1557504216
+export GCC_IGNORE_WERROR=1
+export LDFLAGS="${LDFLAGS} -fno-lto"
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \

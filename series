@@ -9,3 +9,4 @@
 0009-Correct-man-page-s-vendor-kernel-configuration-direc.patch
 0010-Fix-size-check.patch
 0011-Increase-kernel-name-element-size.patch
+0012-Fix-kernel-commandline-removal-handling.patch

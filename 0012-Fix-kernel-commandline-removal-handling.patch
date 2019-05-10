@@ -1,0 +1,190 @@
+From 3c14736e04a8bcff61c1f1b89c107746e934ca05 Mon Sep 17 00:00:00 2001
+From: William Douglas <william.douglas@intel.com>
+Date: Fri, 10 May 2019 08:49:26 -0700
+Subject: [PATCH] Fix kernel commandline removal handling
+
+Previously the only removal that would be processed was extra
+configuration and not the default kernel commandline that is shipped
+with the kernel. This change moves processing the removal until after
+the extra configuration and the default commandline have been merged.
+---
+ src/bootman/kernel.c  |  2 ++
+ src/lib/cmdline.c     | 23 +++++++++--------------
+ src/lib/cmdline.h     |  5 +++++
+ tests/check-cmdline.c | 18 +++++++++---------
+ 4 files changed, 25 insertions(+), 23 deletions(-)
+
+diff --git a/src/bootman/kernel.c b/src/bootman/kernel.c
+index f35201b..875e7eb 100644
+--- a/src/bootman/kernel.c
++++ b/src/bootman/kernel.c
+@@ -243,6 +243,8 @@ Kernel *boot_manager_inspect_kernel(BootManager *self, char *path)
+                 kern->meta.cmdline = cm;
+         }
+ 
++        cbm_parse_cmdline_removal_files_directory(self->sysconfig->prefix, kern->meta.cmdline);
++
+         kern->source.cmdline_file = strdup(cmdline);
+ 
+         /** Determine if the kernel boots */
+diff --git a/src/lib/cmdline.c b/src/lib/cmdline.c
+index 32e7f2e..e1e9e5a 100644
+--- a/src/lib/cmdline.c
++++ b/src/lib/cmdline.c
+@@ -130,7 +130,6 @@ static int cbm_parse_cmdline_file_removal_internal(const char *path, char *out,
+         ssize_t r = 0;
+         size_t sz = 0;
+         char *buf = NULL;
+-        bool ret = true;
+         size_t nbytes = buflen;
+ 
+         /* Cleanup trailing whitespace of out buf */
+@@ -141,7 +140,7 @@ static int cbm_parse_cmdline_file_removal_internal(const char *path, char *out,
+                 if (errno != ENOENT) {
+                         LOG_ERROR("Unable to open %s: %s", path, strerror(errno));
+                 }
+-                return false;
++                return -1;
+         }
+ 
+         while ((r = getline(&buf, &sn, f)) > 0) {
+@@ -241,9 +240,6 @@ static int cbm_parse_cmdline_file_removal_internal(const char *path, char *out,
+                 buf = NULL;
+         }
+ 
+-        if (!ret) {
+-                return -1;
+-        }
+         return (int)nbytes;
+ }
+ 
+@@ -367,29 +363,30 @@ clean:
+         return ret;
+ }
+ 
+-static bool cbm_parse_cmdline_removal_files_directory(char *globfile, char *buffer, size_t buflen)
++void cbm_parse_cmdline_removal_files_directory(const char *root, char *buffer)
+ {
+         glob_t glo = { 0 };
++        autofree(char) *globfile = NULL;
++
+         glo.gl_offs = 0;
+-        size_t sz = buflen;
++        size_t sz = strlen(buffer);
++        globfile = string_printf("%s/%s/cmdline-removal.d/*.conf", root, KERNEL_CONF_DIRECTORY);
+         glob(globfile, GLOB_DOOFFS, NULL, &glo);
+-        int ret = false;
+ 
+         for (size_t i = 0; i < glo.gl_pathc; i++) {
+                 char *argv = glo.gl_pathv[i];
+                 int r = 0;
+ 
++                LOG_DEBUG("Removing cmdline using file: %s", argv);
+                 r = cbm_parse_cmdline_file_removal_internal(argv, buffer, sz);
+                 if (r < 0) {
+-                        goto clean;
++                        continue;
+                 }
+                 sz = (size_t)r;
+         }
+-        ret = true;
+ 
+ clean:
+         globfree(&glo);
+-        return ret;
+ }
+ 
+ char *cbm_parse_cmdline_files(const char *root)
+@@ -397,7 +394,6 @@ char *cbm_parse_cmdline_files(const char *root)
+         autofree(char) *cmdline = NULL;
+         autofree(char) *globfile = NULL;
+         autofree(char) *vendor_glob = NULL;
+-        autofree(char) *vendor_negative_glob = NULL;
+         FILE *memstr = NULL;
+         autofree(char) *buf = NULL;
+         bool bump_start = false;
+@@ -410,7 +406,6 @@ char *cbm_parse_cmdline_files(const char *root)
+         cmdline = string_printf("%s/%s/cmdline", root, KERNEL_CONF_DIRECTORY);
+         globfile = string_printf("%s/%s/cmdline.d/*.conf", root, KERNEL_CONF_DIRECTORY);
+         vendor_glob = string_printf("%s/%s/cmdline.d/*.conf", root, VENDOR_KERNEL_CONF_DIRECTORY);
+-        vendor_negative_glob = string_printf("%s/%s/cmdline-removal.d/*.conf", root, KERNEL_CONF_DIRECTORY);
+ 
+         memstr = open_memstream(&buf, &sz);
+         if (!memstr) {
+@@ -447,7 +442,7 @@ char *cbm_parse_cmdline_files(const char *root)
+ 
+ clean:
+         fclose(memstr);
+-        if (success && cbm_parse_cmdline_removal_files_directory(vendor_negative_glob, buf, sz)) {
++        if (success) {
+                 return strdup(buf);
+         }
+         return NULL;
+diff --git a/src/lib/cmdline.h b/src/lib/cmdline.h
+index 7117090..e5f9900 100644
+--- a/src/lib/cmdline.h
++++ b/src/lib/cmdline.h
+@@ -31,6 +31,11 @@ char *cbm_parse_cmdline_files(const char *root);
+  */
+ char *cbm_parse_cmdline_file(const char *file);
+ 
++/**
++ * Modify buffer using cmdline removal configuration to blacklist content.
++ */
++void cbm_parse_cmdline_removal_files_directory(const char *root, char *buffer);
++
+ /*
+  * Editor modelines  -  https://www.wireshark.org/tools/modelines.html
+  *
+diff --git a/tests/check-cmdline.c b/tests/check-cmdline.c
+index 2c79fa9..4de5469 100644
+--- a/tests/check-cmdline.c
++++ b/tests/check-cmdline.c
+@@ -108,11 +108,11 @@ END_TEST
+ START_TEST(cbm_cmdline_test_delete_middle)
+ {
+         const char *dir = TOP_DIR "/tests/data/cmdline_delete_middle";
++        const char *cmdline = "pre init=/bin/bash foobar rw i8042.nomux thing=off one two three a single line command line file post\n";
+ 
+-        autofree(char) *p = NULL;
++        autofree(char) *p = strdup(cmdline);
+ 
+-        p = cbm_parse_cmdline_files(dir);
+-        fail_if(!p, "Failed to parse cmdline file");
++        cbm_parse_cmdline_removal_files_directory(dir, p);
+         fail_if(!streq(p, "pre post"), "Delete middle file does not match");
+ }
+ END_TEST
+@@ -120,11 +120,11 @@ END_TEST
+ START_TEST(cbm_cmdline_test_delete_ends)
+ {
+         const char *dir = TOP_DIR "/tests/data/cmdline_delete_ends";
++        const char *cmdline = "one two three four\n";
+ 
+-        autofree(char) *p = NULL;
++        autofree(char) *p = strdup(cmdline);
+ 
+-        p = cbm_parse_cmdline_files(dir);
+-        fail_if(!p, "Failed to parse cmdline file");
++        cbm_parse_cmdline_removal_files_directory(dir, p);
+         fail_if(!streq(p, "two three "), "Delete ends does not match");
+ }
+ END_TEST
+@@ -132,11 +132,11 @@ END_TEST
+ START_TEST(cbm_cmdline_test_delete_all)
+ {
+         const char *dir = TOP_DIR "/tests/data/cmdline_delete_all";
++        const char *cmdline = "init=/bin/bash foobar rw i8042.nomux thing=off one two three a single line command line file\n";
+ 
+-        autofree(char) *p = NULL;
++        autofree(char) *p = strdup(cmdline);
+ 
+-        p = cbm_parse_cmdline_files(dir);
+-        fail_if(!p, "Failed to parse cmdline file");
++        cbm_parse_cmdline_removal_files_directory(dir, p);
+         fail_if(!streq(p, ""), "Delete all cmdline does not match");
+ }
+ END_TEST
+-- 
+2.21.0
+
