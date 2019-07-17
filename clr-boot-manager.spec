@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.1.0
-Release  : 46
+Release  : 47
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.1.0/clr-boot-manager-3.1.0.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -35,6 +35,7 @@ Patch9: 0009-Correct-man-page-s-vendor-kernel-configuration-direc.patch
 Patch10: 0010-Fix-size-check.patch
 Patch11: 0011-Increase-kernel-name-element-size.patch
 Patch12: 0012-Fix-kernel-commandline-removal-handling.patch
+Patch13: 0013-Fix-double-free-or-corruption-prev-error.patch
 
 %description
 clr-boot-manager
@@ -97,15 +98,19 @@ services components for the clr-boot-manager package.
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1557504216
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1563336976
 export GCC_IGNORE_WERROR=1
-export LDFLAGS="${LDFLAGS} -fno-lto"
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --prefix /usr --buildtype=plain -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \

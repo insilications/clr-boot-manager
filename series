@@ -10,3 +10,4 @@
 0010-Fix-size-check.patch
 0011-Increase-kernel-name-element-size.patch
 0012-Fix-kernel-commandline-removal-handling.patch
+0013-Fix-double-free-or-corruption-prev-error.patch

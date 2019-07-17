@@ -1,0 +1,25 @@
+From f059bcf1fd5b503585a19da43de9f657e6ff9145 Mon Sep 17 00:00:00 2001
+From: chax <mislav.cakaric@homecontrol.no>
+Date: Thu, 23 May 2019 09:43:50 +0200
+Subject: [PATCH] Fix "double free or corruption (!prev)" error
+
+---
+ src/bootman/bootman.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/bootman/bootman.c b/src/bootman/bootman.c
+index e715c22..fc785e0 100644
+--- a/src/bootman/bootman.c
++++ b/src/bootman/bootman.c
+@@ -442,7 +442,7 @@ int mount_boot(BootManager *self, char **boot_directory)
+                 }
+                 /* Successfully using their premounted ESP, go use it */
+                 LOG_INFO("Skipping to native update");
+-                *boot_directory = boot_dir;
++                *boot_directory = strdup(boot_dir);
+                 if (*boot_directory) {
+                         ret = 0;
+                 }
+-- 
+2.22.0
+
