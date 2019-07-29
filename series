@@ -1,13 +1,3 @@
 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 0002-Motd-updating-script-for-clearlinux.patch
 0003-Don-t-set-root-for-Oracle-kernels.patch
-0004-bootman-Add-functions-for-u-mounting-the-ESP.patch
-0005-bootman-Make-use-of-new-u-mount_boot-calls.patch
-0006-bootman-Move-mount-and-list-helpers.patch
-0007-bootman-Use-mount-helpers-for-setting-the-default-ke.patch
-0008-Attempt-kernel-update-even-if-bootloader-update-fail.patch
-0009-Correct-man-page-s-vendor-kernel-configuration-direc.patch
-0010-Fix-size-check.patch
-0011-Increase-kernel-name-element-size.patch
-0012-Fix-kernel-commandline-removal-handling.patch
-0013-Fix-double-free-or-corruption-prev-error.patch
