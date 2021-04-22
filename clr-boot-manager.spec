@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.2.9
-Release  : 64
+Release  : 65
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.2.9/clr-boot-manager-3.2.9.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.2.9/clr-boot-manager-3.2.9.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -96,7 +96,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1587593359
+export SOURCE_DATE_EPOCH=1619061391
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
