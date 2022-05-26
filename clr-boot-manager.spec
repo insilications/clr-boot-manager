@@ -4,7 +4,7 @@
 #
 Name     : clr-boot-manager
 Version  : 3.2.11
-Release  : 68
+Release  : 69
 URL      : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.2.11/clr-boot-manager-3.2.11.tar.xz
 Source0  : https://github.com/clearlinux/clr-boot-manager/releases/download/v3.2.11/clr-boot-manager-3.2.11.tar.xz
 Source1  : clr-boot-manager-motd.service
@@ -27,6 +27,7 @@ BuildRequires : valgrind
 Patch1: 0001-Ease-performance-impact-of-kernel-booted-detection.patch
 Patch2: 0002-Motd-updating-script-for-clearlinux.patch
 Patch3: 0003-Don-t-set-root-for-Oracle-kernels.patch
+Patch4: 0004-Add-Clear-Linux-kvm-to-native-switch.patch
 
 %description
 clr-boot-manager
@@ -90,13 +91,14 @@ cd %{_builddir}/clr-boot-manager-3.2.11
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1653588636
+export SOURCE_DATE_EPOCH=1653588856
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
