@@ -1,0 +1,93 @@
+From 5f78069e61cf7f34b9a9909595ad7ce299984aa6 Mon Sep 17 00:00:00 2001
+From: William Douglas <william.r.douglas@gmail.com>
+Date: Thu, 26 May 2022 17:46:59 +0000
+Subject: [PATCH] Add Clear Linux kvm+hyperv to native switch
+
+With the kvm+hyperv kernels being removed and the native kernel being
+intended for use in their place, add logic to detect if the kvm+hyperv
+kernels are the default type and switch it to native. Also don't keep
+the kvm+hyperv kernel tip around after the native kernel has been used.
+
+Signed-off-by: William Douglas <william.r.douglas@gmail.com>
+---
+ src/bootman/update.c | 18 ++++++++++++++++--
+ tests/check-uefi.c   | 10 +++++-----
+ 2 files changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/src/bootman/update.c b/src/bootman/update.c
+index b9c06bb..3a8316b 100644
+--- a/src/bootman/update.c
++++ b/src/bootman/update.c
+@@ -287,7 +287,9 @@ static bool boot_manager_update_native(BootManager *self)
+                                 }
+                                 LOG_INFO("update_native: not-running: %s", tk->source.path);
+                                 /* Preserve tip */
+-                                if (tip && tk == tip) {
++                                if (tip && tk == tip &&
++                                    strcmp(kernel_type, "kvm") != 0 &&
++                                    strcmp(kernel_type, "hyperv") != 0) {
+                                         LOG_DEBUG("update_native: Skipping default-%s: %s",
+                                                   kernel_type,
+                                                   tk->source.path);
+@@ -322,10 +324,22 @@ static bool boot_manager_update_native(BootManager *self)
+                 /* Attempt to get it based on the current uname anyway */
+                 if (system_kernel && system_kernel->ktype[0] != '\0') {
+                         new_default =
+-                            boot_manager_get_default_for_type(self, kernels, system_kernel->ktype);
++                                boot_manager_get_default_for_type(self, kernels, system_kernel->ktype);
++                        if (new_default &&
++                            (strcmp(new_default->meta.ktype, "kvm") == 0 ||
++                             strcmp(new_default->meta.ktype, "hyperv") == 0)) {
++                                new_default =
++                                        boot_manager_get_default_for_type(self, kernels, "native");
++                        }
+                 }
+         } else {
+                 new_default = boot_manager_get_default_for_type(self, kernels, running->meta.ktype);
++                if (new_default &&
++                    (strcmp(new_default->meta.ktype, "kvm") == 0 ||
++                     strcmp(new_default->meta.ktype, "hyperv") == 0)) {
++                        new_default =
++                                boot_manager_get_default_for_type(self, kernels, "native");
++                }
+         }
+ 
+         if (new_default) {
+diff --git a/tests/check-uefi.c b/tests/check-uefi.c
+index 04a3f8e..1cbd61d 100644
+--- a/tests/check-uefi.c
++++ b/tests/check-uefi.c
+@@ -379,8 +379,8 @@ START_TEST(bootman_uefi_namespace_migration)
+         }
+         fail_if(!confirm_kernel_installed(m, &uefi_old, &(uefi_old_kernels[0])),
+                 "Kernel 1 not fully installed");
+-        fail_if(!confirm_kernel_installed(m, &uefi_old, &(uefi_old_kernels[1])),
+-                "Kernel 2 not fully installed");
++        fail_if(confirm_kernel_installed(m, &uefi_old, &(uefi_old_kernels[1])),
++                "kvm kernel 2 was installed");
+         fail_if(!confirm_kernel_installed(m, &uefi_old, &(uefi_old_kernels[3])),
+                 "Kernel 4 not fully installed");
+ }
+@@ -474,8 +474,8 @@ START_TEST(bootman_uefi_ensure_removed)
+         fail_if(!m, "Failed to prepare update playground");
+         boot_manager_set_image_mode(m, false);
+ 
+-        /* Start on the 4.2.1-121.kvm */
+-        fail_if(!boot_manager_set_uname(m, "4.2.1-121.kvm"), "Failed to set initial kernel");
++        /* Start on the 4.2.1-121.native */
++        fail_if(!boot_manager_set_uname(m, "4.2.1-121.native"), "Failed to set initial kernel");
+ 
+         /* Set the default kernel to the next kernel */
+         fail_if(!set_kernel_default(&uefi_kernels[1]), "Failed to set kernel as default");
+@@ -484,7 +484,7 @@ START_TEST(bootman_uefi_ensure_removed)
+         fail_if(!boot_manager_update(m), "Failed to apply initial updates");
+ 
+         /* Reboot to new kernel */
+-        fail_if(!boot_manager_set_uname(m, "4.2.3-124.kvm"), "Failed to simulate reboot");
++        fail_if(!boot_manager_set_uname(m, "4.2.3-124.native"), "Failed to simulate reboot");
+         /* Fully bootred */
+         fail_if(!set_kernel_booted(&uefi_kernels[1], true), "Failed to set kernel booted");
+ 
+-- 
+2.36.1
+
