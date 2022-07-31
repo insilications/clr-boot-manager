@@ -3,8 +3,8 @@
 -Dwith-kernel-namespace=org.clearlinux
 -Dwith-bootloader=shim-systemd-boot
 -Dc_std=c11
--Dprefix=/usr
--Dsysconfdir=/etc
+--prefix=/usr
+--sysconfdir=/etc
 -Ddatadir=/usr/share
 -Dwith-kernel-conf-dir=/etc/kernel
 -Dwith-kernel-vendor-conf-dir=/usr/share/kernel

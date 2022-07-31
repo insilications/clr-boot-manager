@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : clr-boot-manager
 Version  : 3.2.11
-Release  : 401
+Release  : 403
 URL      : file:///aot/build/clearlinux/packages/clr-boot-manager/clr-boot-manager-v3.2.11.tar.gz
 Source0  : file:///aot/build/clearlinux/packages/clr-boot-manager/clr-boot-manager-v3.2.11.tar.gz
 Summary  : No detailed summary available
@@ -88,7 +88,7 @@ unset https_proxy
 unset no_proxy
 export SSL_CERT_FILE=/var/cache/ca-certs/anchors/ca-certificates.crt
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1659282170
+export SOURCE_DATE_EPOCH=1659282842
 ## altflags1f content
 ## altflags1
 unset CFLAGS
@@ -151,7 +151,13 @@ export DESKTOP_SESSION=plasma
 CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS" meson --libdir=lib64 --sysconfdir=/usr/share --prefix=/usr --buildtype=plain -Ddefault_library=both  -Dwith-vendor-prefix=Clear-linux \
 -Dwith-kernel-modules-dir=/usr/lib/modules \
 -Dwith-kernel-namespace=org.clearlinux \
--Dwith-bootloader=shim-systemd-boot builddir
+-Dwith-bootloader=shim-systemd-boot \
+-Dc_std=c11 \
+--prefix=/usr \
+--sysconfdir=/etc \
+-Ddatadir=/usr/share \
+-Dwith-kernel-conf-dir=/etc/kernel \
+-Dwith-kernel-vendor-conf-dir=/usr/share/kernel builddir
 ninja --verbose %{?_smp_mflags} -C builddir
 
 
