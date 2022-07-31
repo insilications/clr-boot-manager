@@ -1,5 +1,8 @@
 PKG_NAME := clr-boot-manager
-URL = https://github.com/clearlinux/clr-boot-manager/releases/download/v3.2.11/clr-boot-manager-3.2.11.tar.xz
+URL = https://github.com/insilications/clr-boot-manager-clr.git
 ARCHIVES = 
+ARCHIVES_GIT = 
+FG = 1
+FROM_BRANCH = 
 
 include ../common/Makefile.common
